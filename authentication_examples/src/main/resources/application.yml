@@ -1,0 +1,17 @@
+server:
+  port: 8080
+spring:
+  sql:
+    init:
+      mode: always
+  datasource:
+    url: jdbc:mysql://localhost/spring
+    username: sa
+    password: sa
+  ldap:
+    embedded:
+      ldif: server.ldif
+      base-dn:
+      - dc=springframework,dc=org
+      port: 33389
+

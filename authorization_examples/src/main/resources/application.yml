@@ -1,0 +1,15 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/spring?currentSchema=handsonone
+    username: postgres
+    password: postgres
+    hikari:
+      connection-init-sql: SET TIME ZONE 'UTC'
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+  jpa:
+    open-in-view: false
