@@ -11,7 +11,17 @@ import lombok.RequiredArgsConstructor;
 public class HelloController {
 
     @GetMapping("/hello")
-    public String main(Authentication authentication) {
+    public String getHello(Authentication authentication) {
         return String.format("Hello '%s' you are now authorized!", authentication.getPrincipal());
+    }
+
+    @GetMapping("/ciao")
+    public String getCiao(Authentication authentication) {
+        return String.format("Ciao '%s' you are now authorized!", authentication.getPrincipal());
+    }
+
+    @GetMapping("/hola")
+    public String getHola(Authentication authentication) {
+        return String.format("Hola '%s' you are now authorized!", authentication.getPrincipal());
     }
 }
