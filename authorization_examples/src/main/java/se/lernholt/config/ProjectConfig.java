@@ -1,5 +1,7 @@
 package se.lernholt.config;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -11,9 +13,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 
+import se.lernholt.csrf.CustomCsrfTokenRepository;
 import se.lernholt.filter.AuthenticationLoggingFilter;
+import se.lernholt.filter.CsrfTokenLoggerFilter;
 import se.lernholt.filter.RequestValidationFilter;
+import se.lernholt.filter.StaticKeyAuthenticationFilter;
 
 @SuppressWarnings("deprecation")
 @Configuration
@@ -232,6 +241,85 @@ public class ProjectConfig {
     public SecurityFilterChain customFilter1(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity.addFilterBefore(new RequestValidationFilter(), BasicAuthenticationFilter.class)
                 .addFilterAfter(new AuthenticationLoggingFilter(), BasicAuthenticationFilter.class)
+                .authorizeRequests()
+                .anyRequest()
+                .permitAll()
+                .and()
+                .build();
+    }
+
+    /**
+     * Spring security filter orders: CORS: 100 CSRF: 200 CustomAuth: 300
+     */
+    @Bean
+    public SecurityFilterChain customFilter2(HttpSecurity httpSecurity) throws Exception {
+        return httpSecurity.addFilterBefore(new RequestValidationFilter(), BasicAuthenticationFilter.class)
+                .addFilterAt(new StaticKeyAuthenticationFilter(), BasicAuthenticationFilter.class)
+                .authorizeRequests()
+                .anyRequest()
+                .permitAll()
+                .and()
+                .build();
+    }
+
+    @Bean
+    public SecurityFilterChain csrf1(HttpSecurity httpSecurity) throws Exception {
+        return httpSecurity.addFilterAfter(new CsrfTokenLoggerFilter(), CsrfFilter.class)
+                .authorizeRequests()
+                .anyRequest()
+                .permitAll()
+                .and()
+                .build();
+    }
+
+    @Bean
+    public SecurityFilterChain csrf2(HttpSecurity httpSecurity) throws Exception {
+        return httpSecurity
+//                .csrf(customizer -> customizer.ignoringAntMatchers("/ciao"))
+//                .csrf(customizer -> {
+//                    HandlerMappingIntrospector i = new HandlerMappingIntrospector();
+//                    MvcRequestMatcher requestMatcher = new MvcRequestMatcher(i, "/ciao");
+//                    customizer.ignoringRequestMatchers(requestMatcher);
+//                })
+                .csrf(customizer -> {
+                    String pattern = ".*[0-9].*";
+                    String httpMethod = HttpMethod.POST.name();
+                    RegexRequestMatcher requestMatcher = new RegexRequestMatcher(pattern, httpMethod);
+                    customizer.ignoringRequestMatchers(requestMatcher);
+                })
+                .authorizeRequests()
+                .anyRequest()
+                .permitAll()
+                .and()
+                .build();
+    }
+
+    @Bean
+    public SecurityFilterChain csrf2(HttpSecurity httpSecurity, CustomCsrfTokenRepository tokenRepository)
+            throws Exception {
+        return httpSecurity.csrf(customizer -> customizer.csrfTokenRepository(tokenRepository)
+                .ignoringAntMatchers("/ciao"))
+                .authorizeRequests()
+                .anyRequest()
+                .permitAll()
+                .and()
+                .build();
+    }
+
+    @Bean
+    public SecurityFilterChain cors(HttpSecurity httpSecurity, CustomCsrfTokenRepository tokenRepository)
+            throws Exception {
+        return httpSecurity.csrf()
+                .disable()
+                .cors(customizer -> {
+                    CorsConfigurationSource source = request -> {
+                        CorsConfiguration config = new CorsConfiguration();
+                        config.setAllowedOrigins(List.of("example.com", "example.org"));
+                        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+                        return config;
+                    };
+                    customizer.configurationSource(source);
+                })
                 .authorizeRequests()
                 .anyRequest()
                 .permitAll()

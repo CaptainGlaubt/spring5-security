@@ -6,14 +6,14 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.4</version>
+        <version>2.7.5</version>
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
-    <groupId>se.lernholt</groupId>
-    <artifactId>authorization-examples</artifactId>
+    <groupId>se.lernholt.handsontwo.authorization-server</groupId>
+    <artifactId>hands-on-two-authorization-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>authorization-examples</name>
-    <description>Examples of authorization</description>
+    <name>hands-on-two-authorization-server</name>
+    <description>Hands on two authorization server</description>
     <properties>
         <java.version>11</java.version>
     </properties>
@@ -22,36 +22,15 @@
         <!-- org.springframework.boot -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-
-        <!-- org.springframework.security -->
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-oauth2-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-oauth2-resource-server</artifactId>
-        </dependency>
-
-        <!-- org.projectlombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
         </dependency>
 
         <!-- org.apache.commons -->
@@ -67,6 +46,13 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- org.projectlombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <!-- Test Dependencies -->
         <!-- org.springframework.boot -->
         <dependency>
@@ -74,7 +60,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
         <!-- org.springframework.security -->
         <dependency>
             <groupId>org.springframework.security</groupId>
